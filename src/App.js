@@ -19,6 +19,7 @@ const App = () => {
       })
   }, [])
 
+
   console.log('render', persons.length, 'persons')
   
   const setNewNameTel=(e)=>{
@@ -46,14 +47,11 @@ const App = () => {
         if(window.confirm(`${e.target.name} is already added to phonebook, replace the old number with a new number`)){
           personServices.update(findP.id,newPerson)
           .then(personObject=>{
-            const updatedPersons=persons.map(p=>{
-              if(parseInt(findP.id)===p.id){ return newPerson }
-              else return p
-            })
-            
-            setPersons(updatedPersons)
+            console.log('nuevo',newPerson)
+            setPersons(persons.map(p=> findP.id===p.id? newPerson : p))
             setMessage(`Person '${newPerson.name}' was updated.`)
 
+            
             setTimeout(() => {
               setMessage(null)
             }, 5000)
@@ -101,25 +99,26 @@ const App = () => {
 
   const handlerDelete=(e)=>{
     e.preventDefault()
-    personServices.remove(e.target.id)
-    .then((response)=>{
-      if(window.confirm(`Delete ${e.target.name}`)){
-        const rest=persons.filter(per=>per.id!==parseInt(e.target.id))
-        setPersons(rest)
-        setTypeMessage('exito')
-        setMessage(`the Person '${e.target.name}' was deleted.`)
+    if(window.confirm(`Delete ${e.target.name}`)){
+      personServices.remove(e.target.id)
+      .then((response)=>{
+          console.log('entre',persons)
+          const rest=persons.filter(per=> per.id !== e.target.id )
+          setPersons(rest)
+          setTypeMessage('exito')
+          setMessage(`the Person '${e.target.name}' was deleted.`)
 
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
-      }
-    })
-    .catch(e=>{
-      setTypeMessage('error')
-      //setMessage(`the Person '${e.target.name}' was already deleted from server.`)
-      setMessage(`the Person  was already deleted from server.`)
-      
-    })
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        
+      })
+      .catch(e=>{
+        setTypeMessage('error')
+        //setMessage(`the Person '${e.target.name}' was already deleted from server.`)
+        setMessage(`the Person  was already deleted from server.`)      
+      })
+    }
   }
 
   const personsFind=filterName===''
