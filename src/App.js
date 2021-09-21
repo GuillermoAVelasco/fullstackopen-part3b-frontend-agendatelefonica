@@ -41,14 +41,17 @@ const App = () => {
       name:newName,
       number:newNumber
     }
-    const findP=persons.find(element=> element.name.trim().toUpperCase()===newName.trim().toUpperCase())
-    console.log('filtrado',findP)
+    //console.log('newPerson',newPerson)
+    //console.log('persons',persons)
+    const findP=persons.find(element=> element.name.trim().toUpperCase()===newPerson.name.trim().toUpperCase())
+    //console.log('filtrado',findP)
     if(findP){
-        if(window.confirm(`${e.target.name} is already added to phonebook, replace the old number with a new number`)){
+        if(window.confirm(`${newPerson.name} is already added to phonebook, replace the old number with a new number`)){
+          //console.log('id',findP.id)
           personServices.update(findP.id,newPerson)
           .then(personObject=>{
-            console.log('nuevo',newPerson)
-            setPersons(persons.map(p=> findP.id===p.id? newPerson : p))
+            //console.log('nuevo',newPerson)
+            setPersons(persons.map(p=> findP.id===p.id? personObject : p))
             setMessage(`Person '${newPerson.name}' was updated.`)
 
             
